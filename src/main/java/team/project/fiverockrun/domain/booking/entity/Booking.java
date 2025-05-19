@@ -16,8 +16,7 @@ public class Booking extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private String id;
+    private Long id;
 
     @Column(nullable = false)
     private Long userId;
