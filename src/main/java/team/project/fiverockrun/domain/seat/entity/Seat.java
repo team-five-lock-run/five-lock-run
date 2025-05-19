@@ -21,4 +21,12 @@ public class Seat {
     @Column(name = "seat_number", nullable = false, unique = true)
     private String seatNumber;
 
+    @ManyToOne
+    @JoinColumn(name = "start_station")
+    private Station startStation;
+
+    @ManyToOne
+    @JoinColumn(name = "end_station")
+    private Station endStation;
+
 }
