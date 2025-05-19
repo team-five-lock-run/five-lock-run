@@ -1,9 +1,13 @@
 package team.project.fiverockrun.domain.station.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
+@Getter
+@NoArgsConstructor
+
 @Entity
 @Table(name = "station")
 public class Station {
@@ -17,4 +21,11 @@ public class Station {
     @Column(nullable = false)
     private String region;
 
+    @Column(nullable = false)
+    private boolean isActive = true;
+
+    public Station(String name, String region) {
+        this.name = name;
+        this.region = region;
+    }
 }
