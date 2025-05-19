@@ -2,8 +2,12 @@ package team.project.fiverockrun.domain.seat.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import team.project.fiverockrun.domain.reservation.entity.Reservation;
 import team.project.fiverockrun.domain.station.entity.Station;
 import team.project.fiverockrun.domain.trainCar.entity.TrainCar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -21,11 +25,4 @@ public class Seat {
     @Column(name = "seat_number", nullable = false, unique = true)
     private String seatNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "start_station")
-    private Station startStation;
-
-    @ManyToOne
-    @JoinColumn(name = "end_station")
-    private Station endStation;
 }
