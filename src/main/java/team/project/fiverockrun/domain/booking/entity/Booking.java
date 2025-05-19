@@ -1,9 +1,9 @@
-package team.project.fiverockrun.domain.reservation.entity;
+package team.project.fiverockrun.domain.booking.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import team.project.fiverockrun.common.entity.Timestamped;
-import team.project.fiverockrun.domain.reservation.enums.ReservationStatus;
+import team.project.fiverockrun.domain.booking.enums.BookingStatus;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Reservation extends Timestamped {
+public class Booking extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,13 +30,13 @@ public class Reservation extends Timestamped {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ReservationStatus reservationStatus;
+    private BookingStatus bookingStatus;
 
     @Column(nullable = false)
     private Integer seatPrice;
 
     public void cancelReservation() {
-        this.reservationStatus = ReservationStatus.CANCELED;
+        this.bookingStatus = BookingStatus.CANCELED;
     }
 
 }
