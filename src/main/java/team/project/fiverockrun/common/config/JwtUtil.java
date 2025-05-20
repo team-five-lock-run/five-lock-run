@@ -22,13 +22,14 @@ public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    public String createToken(Long userId, String email, String name, UserRole userRole) {
+    public String createToken(Long userId, String email, String phoneNumber, String name, UserRole userRole) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(String.valueOf(userId))
                         .claim("email", email)
+                        .claim("phoneNumber", phoneNumber)
                         .claim("name", name)
                         .claim("userRole", userRole)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))

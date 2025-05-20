@@ -15,12 +15,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/signup")
-    public AuthResponseDto.Signup signup(@Valid @RequestBody AuthResponseDto.Signup signupResponseDto) {
-        return authService.signup(signupResponseDto);
+    public AuthResponseDto.Signup signup(@Valid @RequestBody AuthRequestDto.Signup signupRequestDto) {
+        return authService.signup(signupRequestDto);
     }
 
     @PostMapping("/auth/signin")
-    public AuthResponseDto.Signin signin(@Valid @RequestBody AuthResponseDto.Signin signinResponseDto) {
-        return authService.signin(signinResponseDto);
+    public AuthResponseDto.Signin signin(@Valid @RequestBody AuthRequestDto.Signin signinRequestDto) {
+        return authService.signin(signinRequestDto);
     }
 }

@@ -10,13 +10,18 @@ public class AuthRequestDto {
 
     @Getter
     @RequiredArgsConstructor
-    public static class Signin {
-
+    public static class Signup {
+        private final String email;
+        private final String phoneNumber;
+        private final String name;
+        private final String password;
+        private final String userRole;
     }
 
     @Getter
     @RequiredArgsConstructor
-    public static class Signup {
-
+    public static class Signin {
+        private final String email;
+        private final String password;
     }
 }
