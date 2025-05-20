@@ -2,10 +2,14 @@ package team.project.fiverockrun.domain.train.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @Entity
 @Table(name = "seat")
+@NoArgsConstructor
 public class Seat {
 
     @Id
@@ -19,4 +23,8 @@ public class Seat {
     @Column(name = "seat_number", nullable = false, unique = true)
     private String seatNumber;
 
+    public Seat(String seatNumber, TrainCar trainCar) {
+        this.seatNumber = seatNumber;
+        this.trainCar = trainCar;
+    }
 }

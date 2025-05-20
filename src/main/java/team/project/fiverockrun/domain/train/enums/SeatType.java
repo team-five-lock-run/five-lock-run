@@ -1,4 +1,5 @@
 package team.project.fiverockrun.domain.train.enums;
 
-public enum SeatGrade {
+public enum SeatType {
+    REGULAR, PREMIUM
 }
