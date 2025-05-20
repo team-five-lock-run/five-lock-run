@@ -9,14 +9,14 @@ public class StationResponse {
     private final String name;
     private final String region;
 
-    public StationResponse(String name, String region) {
-        this.name = name;
+    public StationResponse(String region, String name) {
         this.region = region;
+        this.name = name;
     }
 
     public StationResponse(Station station) {
-        this.name = station.getName();
         this.region = station.getRegion();
+        this.name = station.getName();
     }
 
 

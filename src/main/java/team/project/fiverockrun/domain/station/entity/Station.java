@@ -28,4 +28,8 @@ public class Station {
         this.name = name;
         this.region = region;
     }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
