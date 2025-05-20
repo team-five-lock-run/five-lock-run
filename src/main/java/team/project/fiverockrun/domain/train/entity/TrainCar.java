@@ -2,7 +2,8 @@ package team.project.fiverockrun.domain.train.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import team.project.fiverockrun.domain.train.enums.CarType;
+import lombok.NoArgsConstructor;
+import team.project.fiverockrun.domain.train.enums.SeatType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "train_car")
+@NoArgsConstructor
 public class TrainCar {
 
     @Id
@@ -21,13 +23,18 @@ public class TrainCar {
     private Train train;
 
     @Column(name = "car_number", nullable = false, unique = true)
-    private Long carNumber;
+    private int carNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CarType type;
+    private SeatType seatType;
 
     @OneToMany(mappedBy = "trainCar", cascade = CascadeType.ALL)
     private List<Seat> seats = new ArrayList<>();
 
+    public TrainCar(int carNumber, SeatType seatType, Train train) {
+        this.carNumber = carNumber;
+        this.seatType = seatType;
+        this.train = train;
+    }
 }
