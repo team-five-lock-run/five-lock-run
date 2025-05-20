@@ -21,9 +21,9 @@ public class Route {
     @JoinColumn(name = "train_id", nullable = false)
     private Train train;
 
-    @Column(name = "order", nullable = false)
+    @Column(name = "orders", nullable = false)
     private Long order;
 
     @Column(name = "is_enabled", nullable = false)
-    private Boolean isEnabled;
+    private Boolean isEnabled = true;
 }
