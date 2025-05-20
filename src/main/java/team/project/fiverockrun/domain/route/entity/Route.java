@@ -25,5 +25,5 @@ public class Route {
     private Long order;
 
     @Column(name = "is_enabled", nullable = false)
-    private Boolean isEnabled;
+    private Boolean isEnabled = true;
 }

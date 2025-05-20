@@ -28,4 +28,5 @@ public class Seat {
     @ManyToOne
     @JoinColumn(name = "end_station")
     private Station endStation;
+
 }
