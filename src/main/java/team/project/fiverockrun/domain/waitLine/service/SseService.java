@@ -18,6 +18,11 @@ public class SseService {
 
     // 클라이언트가 subscribe 요청 시 연결 생성 및 저장
     public SseEmitter subscribe(Long userId) {
+
+        if(emitters.containsKey(userId)) {
+            emitters.remove(userId).complete();
+        }
+
         SseEmitter emitter = new SseEmitter(10 * 60 * 1000L); // 10분 동안 연결 유지
         emitters.put(userId, emitter);
 
