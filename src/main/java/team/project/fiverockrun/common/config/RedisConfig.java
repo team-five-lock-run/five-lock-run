@@ -12,22 +12,29 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     // 1. 문자열만 저장할 때 사용하는 템플릿 (락 등 단순 키-값용)
-    @Bean(name = "stringRedisTemplate")
+    @Bean
     public RedisTemplate<String, String> stringRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
+
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
+
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new StringRedisSerializer());
+
         return template;
     }
 
     // 2. 객체를 저장할 때 사용하는 템플릿 (Reservation 등)
-    @Bean(name = "objectRedisTemplate")
+    @Bean
     public RedisTemplate<String, Object> objectRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
+
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
         return template;
     }
 }
