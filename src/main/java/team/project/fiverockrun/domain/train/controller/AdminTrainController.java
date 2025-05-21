@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.project.fiverockrun.domain.train.dto.request.TrainRequest;
+import team.project.fiverockrun.domain.train.dto.request.UpdateTrainRequest;
 import team.project.fiverockrun.domain.train.dto.response.TrainReponse;
+import team.project.fiverockrun.domain.train.dto.response.UpdateTrainResponse;
 import team.project.fiverockrun.domain.train.service.TrainService;
 
 @RestController
@@ -43,8 +45,14 @@ public class AdminTrainController {
         return ResponseEntity.ok().build();
     }
 
-
-
     // 열차 (차량, 좌석) 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<UpdateTrainResponse> createStation (
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTrainRequest request
+    ) {
+        UpdateTrainResponse response = trainService.updateTrain(id, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
 }
