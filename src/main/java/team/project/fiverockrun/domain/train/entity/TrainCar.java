@@ -10,7 +10,10 @@ import java.util.List;
 
 @Getter
 @Entity
-@Table(name = "train_car")
+// 같은 기차 안에서 차량 번호가 유일해야함
+@Table(name = "train_car", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"train_id", "car_number"})
+})
 @NoArgsConstructor
 public class TrainCar {
 
@@ -22,14 +25,14 @@ public class TrainCar {
     @JoinColumn(name = "train_id", nullable = false)
     private Train train;
 
-    @Column(name = "car_number", nullable = false, unique = true)
+    @Column(name = "car_number", nullable = false)
     private int carNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SeatType seatType;
 
-    @OneToMany(mappedBy = "trainCar", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainCar", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seat> seats = new ArrayList<>();
 
     public TrainCar(int carNumber, SeatType seatType, Train train) {

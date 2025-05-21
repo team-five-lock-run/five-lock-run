@@ -25,10 +25,16 @@ public class Train {
     @Column(nullable = false)
     private TrainType type;
 
+    @Column(nullable = false)
+    private boolean isActive = true;
+
     public Train(Long trainNumber, String name, TrainType type) {
         this.trainNumber = trainNumber;
         this.name = name;
         this.type = type;
     }
 
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }

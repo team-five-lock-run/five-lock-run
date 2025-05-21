@@ -21,4 +21,5 @@ public class TrainReponse {
         this.seatsCount = seatsCount;
         this.premiumCarCount = premiumCarCount;
     }
+
 }

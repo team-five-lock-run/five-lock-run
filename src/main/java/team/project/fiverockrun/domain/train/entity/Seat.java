@@ -4,11 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @Entity
-@Table(name = "seat")
+@Table(name = "seat", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"train_car_id", "seat_number"})
+})
 @NoArgsConstructor
 public class Seat {
 
@@ -20,7 +20,7 @@ public class Seat {
     @JoinColumn(name = "train_car_id", nullable = false)
     private TrainCar trainCar;
 
-    @Column(name = "seat_number", nullable = false, unique = true)
+    @Column(name = "seat_number", nullable = false)
     private String seatNumber;
 
     public Seat(String seatNumber, TrainCar trainCar) {

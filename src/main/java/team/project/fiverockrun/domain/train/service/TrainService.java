@@ -1,11 +1,14 @@
 package team.project.fiverockrun.domain.train.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.project.fiverockrun.common.exception.BaseException;
 import team.project.fiverockrun.domain.train.dto.request.TrainRequest;
+import team.project.fiverockrun.domain.train.dto.request.UpdateTrainRequest;
 import team.project.fiverockrun.domain.train.dto.response.TrainReponse;
+import team.project.fiverockrun.domain.train.dto.response.UpdateTrainResponse;
 import team.project.fiverockrun.domain.train.entity.Seat;
 import team.project.fiverockrun.domain.train.entity.Train;
 import team.project.fiverockrun.domain.train.entity.TrainCar;
@@ -31,7 +34,7 @@ public class TrainService {
     public TrainReponse createTrain(TrainRequest trainRequest) {
 
         if (trainRepository.findByTrainNumber(trainRequest.getTrainNumber()).isPresent()) {
-            throw  new BaseException(TrainError.TRAIN_NUMBER_ALREADY_EXISTS);
+            throw new BaseException(TrainError.TRAIN_NUMBER_ALREADY_EXISTS);
         }
 
         // 열차 생성
@@ -72,6 +75,83 @@ public class TrainService {
                 trainRequest.getCarCount(),
                 trainRequest.getSeatsCount(),
                 trainRequest.getPremiumCarCount()
+        );
+    }
+
+    // 열차 비활성화
+    @Transactional
+    public void deactivateTrain(Long trainId) {
+        Train train = trainRepository.findById(trainId)
+                .orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_TRAIN));
+
+        if (!train.isActive()) {
+            throw new BaseException(TrainError.ALREADY_DEACTIVATE_TRAIN);
+        }
+
+        train.setActive(false);
+        trainRepository.save(train);
+    }
+
+    // 열차 활성화
+    @Transactional
+    public void activateTrain(Long trainId) {
+        Train train = trainRepository.findById(trainId)
+                .orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_TRAIN));
+
+        if (train.isActive()) {
+            throw new BaseException(TrainError.ALREADY_ACTIVE_TRAIN);
+        }
+
+        train.setActive(true);
+        trainRepository.save(train);
+    }
+
+    // 열차에 대한 차량, 좌석 수정
+    @Transactional
+    public UpdateTrainResponse updateTrain(Long trainId, UpdateTrainRequest request) {
+        Train train = trainRepository.findById(trainId)
+                .orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_TRAIN));
+
+        if (train.isActive()) {
+            throw new BaseException(TrainError.CANNOT_EDIT_ACTIVE_TRAIN);
+        }
+
+        // 모든 값 drop
+        List<TrainCar> trainCars = trainCarRepository.findByTrainId(trainId);
+        trainCarRepository.deleteAll(trainCars);
+        trainCarRepository.flush();
+
+        List<TrainCar> carList = new ArrayList<>();
+        List<Seat> seatList = new ArrayList<>();
+
+        // 차량 생성
+        for (int carNumber = 1; carNumber <= request.getCarCount(); carNumber++) {
+            SeatType seatType = (carNumber <= request.getPremiumCarCount())
+                    ? SeatType.PREMIUM : SeatType.REGULAR;
+
+            TrainCar trainCar = new TrainCar(carNumber, seatType, train);
+            carList.add(trainCar);
+        }
+
+        trainCarRepository.saveAll(carList);
+        trainCarRepository.flush(); // DB 강제 반영
+
+        // 좌석 생성
+        for (TrainCar trainCar : carList){
+            for (int seatNumber = 1; seatNumber <= request.getSeatsCount(); seatNumber++) {
+                char row = (char) ('A' + trainCar.getCarNumber() - 1);
+                String seatNum = row + String.valueOf(seatNumber);
+                Seat seat = new Seat(seatNum, trainCar);
+                seatList.add(seat);
+            }
+        }
+
+        seatRepository.saveAll(seatList);
+
+        return new UpdateTrainResponse(
+                request.getCarCount(),
+                request.getSeatsCount(),
+                request.getPremiumCarCount()
         );
     }
 
