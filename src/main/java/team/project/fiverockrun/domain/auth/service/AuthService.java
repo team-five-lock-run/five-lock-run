@@ -1,6 +1,5 @@
 package team.project.fiverockrun.domain.auth.service;
 
-import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +51,10 @@ public class AuthService {
     public AuthResponseDto.Signin signin(AuthRequestDto.Signin signinRequest) {
         User user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(
                 () -> new BaseException(USER_NOT_FOUND));
+
+        if(user.isDeleted()) {
+            throw new BaseException(DELETED_USER);
+        }
 
         if (!passwordEncoder.matches(signinRequest.getPassword(), user.getPassword())) {
             throw new BaseException(WRONG_PASSWORD);

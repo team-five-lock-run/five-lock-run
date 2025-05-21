@@ -16,4 +16,12 @@ public class UserResponseDto {
         private final String name;
         private final UserRole userRole;
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class Edit {
+        private final String email;
+        private final String phoneNumber;
+        private final String name;
+    }
 }

@@ -15,9 +15,10 @@ public enum AuthError implements ErrorCode {
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN,"AUTH_ERROR_006","접근 권한이 없습니다."),
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED,"AUTH_ERROR_007","토큰을 찾을 수 없습니다."),
 
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_ERROR_008", "가입되지 않은 유저입니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_ERROR_008", "가입되지 않은 사용자입니다."),
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "AUTH_ERROR_009", "이미 사용 중인 이메일입니다."),
-    WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "AUTH_ERROR_010", "올바르지 않은 비밀번호입니다.");
+    WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "AUTH_ERROR_010", "올바르지 않은 비밀번호입니다."),
+    DELETED_USER(HttpStatus.NOT_FOUND, "AUTH_ERROR_011", "탈퇴한 사용자입니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;
