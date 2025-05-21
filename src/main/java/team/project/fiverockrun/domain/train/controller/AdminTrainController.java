@@ -16,7 +16,7 @@ public class AdminTrainController {
 
     private final TrainService trainService;
 
-    // 열차 생성
+    // 열차(차량, 좌석) 생성
     @PostMapping
     public ResponseEntity<TrainReponse> createStation (
             @Valid @RequestBody TrainRequest trainRequest
@@ -24,4 +24,27 @@ public class AdminTrainController {
         TrainReponse response = trainService.createTrain(trainRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    // 열차 비활성화
+    @PatchMapping("/{id}/deactive")
+    public ResponseEntity<Void> deactivateTrain (
+            @PathVariable Long id
+    ) {
+        trainService.deactivateTrain(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // 열차 활성화
+    @PatchMapping("/{id}/active")
+    public ResponseEntity<Void> activateTrain (
+            @PathVariable Long id
+    ) {
+        trainService.activateTrain(id);
+        return ResponseEntity.ok().build();
+    }
+
+
+
+    // 열차 (차량, 좌석) 수정
+
 }
