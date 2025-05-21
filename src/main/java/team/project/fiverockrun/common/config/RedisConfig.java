@@ -10,6 +10,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import team.project.fiverockrun.global.redis.RedisExpiredEventListener;
 
 @Configuration
 public class RedisConfig {
@@ -39,5 +40,22 @@ public class RedisConfig {
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         return template;
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(
+            RedisConnectionFactory connectionFactory,
+            MessageListenerAdapter listenerAdapter
+    ) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(listenerAdapter, new PatternTopic("__keyevent@0__:expired"));
+        return container;
+
+    }
+
+    @Bean
+    public MessageListenerAdapter listenerAdapter(RedisExpiredEventListener listener) {
+        return new MessageListenerAdapter(listener);
     }
 }
