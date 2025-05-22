@@ -23,8 +23,8 @@ jobs:
       - name: Grant permission to gradlew
         run: chmod +x ./gradlew
 
-      - name: Build jar using bootJar
-        run: ./gradlew bootJar
+      - name: Build with Gradle
+        run: ./gradlew clean build
 
       - name: Upload JAR to EC2
         uses: appleboy/scp-action@master
@@ -49,6 +49,9 @@ jobs:
           echo "[DEBUG] .env 파일 내용:"
           cat .env
 
+      - name: Compress deployment files
+        run: tar -czf deploy.tar.gz Dockerfile docker-compose.yml .env
+
       - name: Upload docker & env files to EC2
         uses: appleboy/scp-action@master
         with:
@@ -56,7 +59,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: "./"
+          source: "deploy.tar.gz"
           target: "~/five-lock-run"
 
       - name: Run app on EC2 using docker-compose
@@ -68,6 +71,7 @@ jobs:
           port: 22
           script: |
             cd ~/five-lock-runa
+            tar -xzf deploy.tar.gz
             docker-compose down
             docker-compose build
             docker-compose up -d
