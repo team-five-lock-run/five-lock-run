@@ -38,4 +38,4 @@ out/
 .vscode/
 
 ### test properties ###
-!**/src/main/resources/application-test.properties
+/src/main/resources/application-test.properties
