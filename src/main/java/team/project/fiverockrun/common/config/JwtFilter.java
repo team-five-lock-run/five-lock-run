@@ -2,6 +2,7 @@ package team.project.fiverockrun.common.config;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
+import org.springframework.data.redis.core.RedisTemplate;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,8 +38,8 @@ public class JwtFilter extends OncePerRequestFilter {
         Claims claims = jwtUtil.validateToken(token);
 
         if (claims != null) {
-            String email = claims.get("email", String.class);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            String userId = claims.getSubject();
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
 
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -48,4 +49,5 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

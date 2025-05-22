@@ -49,4 +49,10 @@ public class JwtUtil {
             return null;
         }
     }
+
+    public long getRemainingTime(String token) {
+        Date expiration = validateToken(token).getExpiration();
+        long now = System.currentTimeMillis();
+        return expiration.getTime() - now;
+    }
 }

@@ -12,6 +12,7 @@ import team.project.fiverockrun.domain.user.entity.User;
 import team.project.fiverockrun.domain.user.enums.UserRole;
 import team.project.fiverockrun.domain.user.repository.UserRepository;
 
+
 import static team.project.fiverockrun.domain.auth.exception.AuthError.*;
 
 @Service
@@ -66,4 +67,5 @@ public class AuthService {
 
         return new AuthResponseDto.Signin(bearerToken);
     }
+
 }
