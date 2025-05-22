@@ -25,10 +25,12 @@ public class AuthService {
 
     @Transactional
     public AuthResponseDto.Signup signup(AuthRequestDto.Signup signupRequest) {
-
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+        userRepository.findByEmail(signupRequest.getEmail()).ifPresent(user -> {
+            if (user.isDeleted()) {
+                throw new BaseException(DELETED_USER);
+            }
             throw new BaseException(DUPLICATE_EMAIL);
-        }
+        });
 
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
