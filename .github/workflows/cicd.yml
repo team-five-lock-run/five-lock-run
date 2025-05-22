@@ -49,7 +49,6 @@ jobs:
           echo "[DEBUG] .env 파일 내용:"
           cat .env
 
-      # docker 관련 파일 + .env EC2로 전송
       - name: Upload docker & env files to EC2
         uses: appleboy/scp-action@master
         with:
@@ -57,10 +56,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: |
-            ./Dockerfile
-            ./docker-compose.yml
-            ./.env
+          source: "./Dockerfile ./docker-compose.yml ./.env"
           target: "~/five-lock-run"
 
       - name: Run app on EC2 using docker-compose
