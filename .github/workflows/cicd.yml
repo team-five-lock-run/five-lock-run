@@ -36,10 +36,20 @@ jobs:
           source: "./build/libs/*.jar"
           target: "~/five-lock-run"
 
+      # GitHub Secrets에서 줄바꿈 포함한 .env 생성
       - name: Create .env file from GitHub Secrets
         run: |
           printf "%s\n" "${{ secrets.ENV_FILE }}" > .env
 
+      # 디버깅: .env 파일 존재 여부 확인
+      - name: Debug - Check .env file
+        run: |
+          echo "[DEBUG] 파일 목록:"
+          ls -al
+          echo "[DEBUG] .env 파일 내용:"
+          cat .env
+
+      # docker 관련 파일 + .env EC2로 전송
       - name: Upload docker & env files to EC2
         uses: appleboy/scp-action@master
         with:
