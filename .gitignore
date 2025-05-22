@@ -36,3 +36,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### test properties ###
+!**/src/main/resources/application-test.properties
