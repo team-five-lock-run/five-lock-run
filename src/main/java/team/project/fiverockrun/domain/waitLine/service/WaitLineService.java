@@ -3,7 +3,8 @@ package team.project.fiverockrun.domain.waitLine.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import team.project.fiverockrun.domain.waitLine.dto.request.WaitLinesRequestDto;
+import team.project.fiverockrun.domain.waitLine.dto.request.WaitLineRequestDto;
+import team.project.fiverockrun.domain.waitLine.dto.response.WaitLineResponseDto;
 import team.project.fiverockrun.domain.waitLine.model.WaitLine;
 
 import java.time.Duration;
@@ -17,23 +18,23 @@ public class WaitLineService {
     private final SseService sseService;
     private static final long MAX_QUEUE_SIZE = 10000;
 
-    public String enterQueue(WaitLinesRequestDto requestDto) {
-        Long userId = 1L; // todo: 지울 것
+    public WaitLineResponseDto enterQueue(Long userId, WaitLineRequestDto requestDto) {
         String queueKey = buildQueueKey(requestDto);
 
         // 대기열 수 초과 체크
         Long size = redisTemplate.opsForList().size(queueKey);
         if(size != null && size >= MAX_QUEUE_SIZE) {
-            return "full";
+            return new WaitLineResponseDto(false, "full of waiting line");
         }
 
         WaitLine waitLine = new WaitLine(
                 userId,
-                requestDto.getDate(),
-                requestDto.getTime(),
-                requestDto.getDepartureId(),
-                requestDto.getArrivalId(),
-                requestDto.getPeople()
+                requestDto.getDepartureDate(),
+                requestDto.getDepartureTime(),
+                requestDto.getArrivalDateTime(),
+                requestDto.getDepartureStation(),
+                requestDto.getArrivalStation(),
+                requestDto.getPassengerCount()
         );
 
         // Redis List에 대기열 저장
@@ -46,7 +47,7 @@ public class WaitLineService {
         // Backup Key 설정 (TTL 키가 만료되어 없어질 때 queue key 복원)
         String backupKey = "queue:backup:" + userId;
         redisTemplate.opsForValue().set(backupKey, queueKey, Duration.ofMinutes(5));
-        return "enter & TTL";
+        return new WaitLineResponseDto(true, "enter of waiting line");
 
     }
 
@@ -63,10 +64,10 @@ public class WaitLineService {
         return -1L; // 대기열에 없음
     }
 
-    public String leaveQueue(Long userId, String queueKey) {
+    public WaitLineResponseDto leaveQueue(Long userId, String queueKey) {
         List<Object> queue = redisTemplate.opsForList().range(queueKey, 0, -1);
         if(queue == null || queue.isEmpty()) {
-            return "empty";
+            return new WaitLineResponseDto(false, "empty of waiting line");
         }
 
         for(Object obj : queue) {
@@ -82,14 +83,43 @@ public class WaitLineService {
                 // 사용자 나간 후 순번 재계산 및 알림
                 notifyAllUserPositions(queueKey);
 
-                return "out of wait line & remove ttl";
+                return new WaitLineResponseDto(true, "leave of waiting line");
             }
         }
-        return "not exist";
+        return new WaitLineResponseDto(false, "not exist user in waiting line");
     }
 
-    private String buildQueueKey(WaitLinesRequestDto requestDto) {
-        return "queue : " + requestDto.getDate() + " : " + requestDto.getTime() + " : " + requestDto.getDepartureId() + " : " + requestDto.getArrivalId();
+    public WaitLineResponseDto completeQueue(Long userId, String queueKey) {
+        List<Object> queue = redisTemplate.opsForList().range(queueKey, 0, -1);
+        if(queue == null || queue.isEmpty()) {
+            return new WaitLineResponseDto(false, "not exist information of waiting line");
+        }
+
+        for(Object obj : queue) {
+            if(obj instanceof WaitLine waitLine && waitLine.getUserId().equals(userId)) {
+                // Redis List에서 사용자 제거
+                redisTemplate.opsForList().remove(queueKey, 1, waitLine);
+
+                // TTL 키 및 백업 키 제거
+                redisTemplate.delete("queue:ttl:" + userId);
+                redisTemplate.delete("queue:backup:" + userId);
+
+                // 실시간 순번 알림 전송
+                notifyAllUserPositions(queueKey);
+
+                return new WaitLineResponseDto(true, "complete reservation");
+            }
+        }
+
+        return new WaitLineResponseDto(false, "not exist user in waiting line");
+    }
+
+    private String buildQueueKey(WaitLineRequestDto requestDto) {
+        return "queue:" + requestDto.getDepartureDate()
+                + ":" + requestDto.getDepartureTime()
+                + ":" + requestDto.getArrivalDateTime()
+                + ":" + requestDto.getDepartureStation()
+                + ":" + requestDto.getArrivalStation();
     }
 
     // 순번 재계산 메서드
