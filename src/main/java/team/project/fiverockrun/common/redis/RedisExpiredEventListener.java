@@ -1,4 +1,4 @@
-package team.project.fiverockrun.global.redis;
+package team.project.fiverockrun.common.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
