@@ -58,9 +58,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           source: |
-            "./Dockerfile"
-            "./docker-compose.yml"
-            "./.env"
+            ./Dockerfile
+            ./docker-compose.yml
+            ./.env
           target: "~/five-lock-run"
 
       - name: Run app on EC2 using docker-compose
