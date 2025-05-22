@@ -70,7 +70,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd ~/five-lock-runa
+            cd ~/five-lock-run
             tar -xzf deploy.tar.gz
             docker-compose down
             docker-compose build
