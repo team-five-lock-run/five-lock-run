@@ -116,7 +116,7 @@ public class TrainService {
             throw new BaseException(TrainError.CANNOT_EDIT_ACTIVE_TRAIN);
         }
 
-        // 모든 값 drop
+        // 모든 값 dropB
         List<TrainCar> trainCars = trainCarRepository.findByTrainId(trainId);
         trainCarRepository.deleteAll(trainCars);
         trainCarRepository.flush();
