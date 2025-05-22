@@ -18,7 +18,7 @@ public class WaitLineService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final SseService sseService;
-    private static final long MAX_QUEUE_SIZE = 10000;
+    private static final long MAX_QUEUE_SIZE = 1000;
 
     public WaitLineResponseDto enterQueue(Long userId, WaitLineRequestDto requestDto) {
         String queueKey = buildQueueKey(requestDto);
