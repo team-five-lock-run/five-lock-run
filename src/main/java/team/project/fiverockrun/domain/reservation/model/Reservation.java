@@ -1,13 +1,14 @@
 package team.project.fiverockrun.domain.reservation.model;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import team.project.fiverockrun.domain.reservation.dto.request.ReservationRequest;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Reservation {
 
     private Long trainId;
@@ -23,8 +24,7 @@ public class Reservation {
     private LocalDateTime reservedAt;
     private LocalDateTime expireAt;
 
-/*
-    public static Reservation of(SeatResponse dto, Long userId) {
+    public static Reservation of(ReservationRequest dto, Long userId) {
         LocalDateTime now = LocalDateTime.now();
         return new Reservation(
                 dto.getTrainId(),
@@ -41,5 +41,4 @@ public class Reservation {
                 now.plusMinutes(10)
         );
     }
-*/
 }
