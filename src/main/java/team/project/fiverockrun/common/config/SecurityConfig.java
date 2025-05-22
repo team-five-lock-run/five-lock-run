@@ -4,6 +4,7 @@ package team.project.fiverockrun.common.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -23,6 +24,8 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
+    private final RedisTemplate<String, String> redisTemplate;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -31,6 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**")
                         .permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
@@ -44,7 +48,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtFilter jwtFilter() {
-        return new JwtFilter(jwtUtil, userDetailsService);
+        return new JwtFilter(jwtUtil, userDetailsService, redisTemplate);
     }
 
     @Bean
