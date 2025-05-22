@@ -48,7 +48,7 @@ public class WaitLineService {
 
         // Backup Key 설정 (TTL 키가 만료되어 없어질 때 queue key 복원)
         String backupKey = "queue:backup:" + userId;
-        redisTemplate.opsForValue().set(backupKey, queueKey, Duration.ofMinutes(5));
+        redisTemplate.opsForValue().set(backupKey, queueKey, Duration.ofMinutes(6));
 
         return new WaitLineResponseDto(true, "enter of waiting line", queueKey);
     }
