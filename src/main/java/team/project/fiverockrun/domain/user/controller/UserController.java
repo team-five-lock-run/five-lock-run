@@ -17,19 +17,19 @@ public class UserController {
     //사용자 조회 (본인)
     @GetMapping("/users")
     public ResponseEntity<UserResponseDto.Get> getUser(@AuthenticationPrincipal CustomUserPrincipal customUserPrincipal) {
-        return ResponseEntity.ok(userService.getUser(customUserPrincipal.getUser().getEmail()));
+        return ResponseEntity.ok(userService.getUser(customUserPrincipal.getUser().getId()));
     }
 
     //사용자 수정 (본인)
     @PatchMapping("/users")
     public ResponseEntity<UserResponseDto.Edit> editUser(@AuthenticationPrincipal CustomUserPrincipal customUserPrincipal, @RequestBody UserRequestDto.Edit requestDto){
-        return ResponseEntity.ok(userService.editUser(requestDto, customUserPrincipal.getUser().getEmail()));
+        return ResponseEntity.ok(userService.editUser(requestDto, customUserPrincipal.getUser().getId()));
     }
 
     //사용자 삭제 (본인, 회원 탈퇴)
     @DeleteMapping("/users")
     public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserPrincipal customUserPrincipal, @RequestBody UserRequestDto.Delete requestDto) {
-        userService.deleteUser(requestDto, customUserPrincipal.getUser().getEmail());
+        userService.deleteUser(requestDto, customUserPrincipal.getUser().getId());
         return ResponseEntity.noContent().build();
     }
 

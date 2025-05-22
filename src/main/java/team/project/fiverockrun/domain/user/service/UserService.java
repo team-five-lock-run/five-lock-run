@@ -21,15 +21,15 @@ public class UserService {
 
     //유저 조회
     @Transactional(readOnly = true)
-    public UserResponseDto.Get getUser(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+    public UserResponseDto.Get getUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
         return new UserResponseDto.Get(user.getEmail(), user.getPhoneNumber(), user.getName(), user.getUserRole());
     }
 
     //유저 수정
     @Transactional
-    public UserResponseDto.Edit editUser(UserRequestDto.Edit requestDto, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+    public UserResponseDto.Edit editUser(UserRequestDto.Edit requestDto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
         //이름, 이메일, 전화번호 업데이트
         if(requestDto.getName() != null){
@@ -56,8 +56,8 @@ public class UserService {
 
     //유저 삭제
     @Transactional
-    public void deleteUser(UserRequestDto.Delete requestDto, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+    public void deleteUser(UserRequestDto.Delete requestDto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
         if(user.isDeleted()) {
             throw new BaseException(DELETED_USER);
