@@ -37,7 +37,8 @@ jobs:
           target: "~/five-lock-run"
 
       - name: Create .env file from GitHub Secrets
-        run: echo "${{ secrets.ENV_FILE }}" > .env
+        run: |
+          printf "%s\n" "${{ secrets.ENV_FILE }}" > .env
 
       - name: Upload docker & env files to EC2
         uses: appleboy/scp-action@master
