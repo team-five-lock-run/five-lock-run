@@ -24,7 +24,7 @@ public class WaitLineService {
         // 대기열 수 초과 체크
         Long size = redisTemplate.opsForList().size(queueKey);
         if(size != null && size >= MAX_QUEUE_SIZE) {
-            return new WaitLineResponseDto(false, "full of waiting line");
+            return new WaitLineResponseDto(false, "full of waiting line", queueKey);
         }
 
         WaitLine waitLine = new WaitLine(
@@ -47,7 +47,7 @@ public class WaitLineService {
         // Backup Key 설정 (TTL 키가 만료되어 없어질 때 queue key 복원)
         String backupKey = "queue:backup:" + userId;
         redisTemplate.opsForValue().set(backupKey, queueKey, Duration.ofMinutes(5));
-        return new WaitLineResponseDto(true, "enter of waiting line");
+        return new WaitLineResponseDto(true, "enter of waiting line", queueKey);
 
     }
 
@@ -67,7 +67,7 @@ public class WaitLineService {
     public WaitLineResponseDto leaveQueue(Long userId, String queueKey) {
         List<Object> queue = redisTemplate.opsForList().range(queueKey, 0, -1);
         if(queue == null || queue.isEmpty()) {
-            return new WaitLineResponseDto(false, "empty of waiting line");
+            return new WaitLineResponseDto(false, "empty of waiting line", queueKey);
         }
 
         for(Object obj : queue) {
@@ -83,16 +83,16 @@ public class WaitLineService {
                 // 사용자 나간 후 순번 재계산 및 알림
                 notifyAllUserPositions(queueKey);
 
-                return new WaitLineResponseDto(true, "leave of waiting line");
+                return new WaitLineResponseDto(true, "leave of waiting line", queueKey);
             }
         }
-        return new WaitLineResponseDto(false, "not exist user in waiting line");
+        return new WaitLineResponseDto(false, "not exist user in waiting line", queueKey);
     }
 
     public WaitLineResponseDto completeQueue(Long userId, String queueKey) {
         List<Object> queue = redisTemplate.opsForList().range(queueKey, 0, -1);
         if(queue == null || queue.isEmpty()) {
-            return new WaitLineResponseDto(false, "not exist information of waiting line");
+            return new WaitLineResponseDto(false, "not exist information of waiting line", queueKey);
         }
 
         for(Object obj : queue) {
@@ -107,11 +107,11 @@ public class WaitLineService {
                 // 실시간 순번 알림 전송
                 notifyAllUserPositions(queueKey);
 
-                return new WaitLineResponseDto(true, "complete reservation");
+                return new WaitLineResponseDto(true, "complete reservation", queueKey);
             }
         }
 
-        return new WaitLineResponseDto(false, "not exist user in waiting line");
+        return new WaitLineResponseDto(false, "not exist user in waiting line", queueKey);
     }
 
     private String buildQueueKey(WaitLineRequestDto requestDto) {

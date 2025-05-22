@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class WaitLineResponseDto {
     private final boolean success;
     private final String message;
+    private final String queueKey;
 }
