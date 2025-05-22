@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - dev
+      - feat/haeun
 
 jobs:
   deploy:
@@ -56,7 +56,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: "./Dockerfile ./docker-compose.yml ./.env"
+          source: "./"
           target: "~/five-lock-run"
 
       - name: Run app on EC2 using docker-compose
@@ -67,7 +67,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd ~/five-lock-run
+            cd ~/five-lock-runa
             docker-compose down
             docker-compose build
             docker-compose up -d
