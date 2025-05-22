@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jrez
+FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
