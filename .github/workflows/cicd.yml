@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - haeun/feat
+      - feat/haeun
 
 jobs:
   deploy:
