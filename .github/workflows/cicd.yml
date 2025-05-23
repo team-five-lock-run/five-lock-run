@@ -1,6 +1,6 @@
 name: CI/CD Deploy to EC2
 
-# 트리거 조건 : dev브랜치에 push 될 때 자동 실행
+# 트리거 조건 : dev 브랜치에 push 될 때 자동 실행
 on:
   workflow_dispatch:
   push:
@@ -70,7 +70,7 @@ jobs:
           source: "deploy.tar.gz"
           target: "~/five-lock-run"
 
-      # ec2에서 docker compose 실행!
+      # ec2에서 docker compose 실행
       - name: Run app on EC2 using docker-compose
         uses: appleboy/ssh-action@v0.1.6
         with:
