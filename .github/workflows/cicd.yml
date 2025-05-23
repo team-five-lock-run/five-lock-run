@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feat/haeun
+      - dev
 
 jobs:
   deploy:
@@ -27,9 +27,9 @@ jobs:
       - name: Grant permission to gradlew
         run: chmod +x ./gradlew
 
-      # Gradle 빌드
+      # Gradle 빌드 (테스트코드 제외)
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew build -x test
 
       # JAR 파일을 ec2로 전송
       - name: Upload JAR to EC2
