@@ -1,6 +1,9 @@
 package team.project.fiverockrun.domain.auth.service;
 
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.project.fiverockrun.common.config.JwtUtil;
@@ -13,6 +16,8 @@ import team.project.fiverockrun.domain.user.enums.UserRole;
 import team.project.fiverockrun.domain.user.repository.UserRepository;
 
 
+import java.util.concurrent.TimeUnit;
+
 import static team.project.fiverockrun.domain.auth.exception.AuthError.*;
 
 @Service
@@ -23,6 +28,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
     public AuthResponseDto.Signup signup(AuthRequestDto.Signup signupRequest) {
@@ -68,4 +74,26 @@ public class AuthService {
         return new AuthResponseDto.Signin(bearerToken);
     }
 
+    public void logout(HttpServletRequest request) {
+        String token = resolveToken(request);
+        if (token == null) {
+            throw new BaseException(INVALID_TOKEN);
+        }
+
+        Claims claims = jwtUtil.validateToken(token);
+        if (claims == null) {
+            throw new BaseException(INVALID_TOKEN);
+        }
+
+        long expiration = jwtUtil.getRemainingTime(token);
+        redisTemplate.opsForValue().set("blacklist:" + token, "logout", expiration, TimeUnit.MILLISECONDS);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        if (bearer != null && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7);
+        }
+        return null;
+    }
 }

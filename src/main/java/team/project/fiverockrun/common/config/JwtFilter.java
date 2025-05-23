@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import team.project.fiverockrun.domain.auth.security.CustomUserDetailsService;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,6 +23,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
+    private final RedisTemplate<String, String> redisTemplate;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -35,9 +38,16 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+
         Claims claims = jwtUtil.validateToken(token);
 
         if (claims != null) {
+
+            if (isBlacklisted(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String userId = claims.getSubject();
             UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
 
@@ -48,6 +58,9 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+    public boolean isBlacklisted(String token) {
+        return redisTemplate.hasKey("blacklist:" + token);
     }
 
 }

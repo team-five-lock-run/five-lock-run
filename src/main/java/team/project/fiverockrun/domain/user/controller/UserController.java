@@ -1,5 +1,6 @@
 package team.project.fiverockrun.domain.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,13 +23,13 @@ public class UserController {
 
     //사용자 수정 (본인)
     @PatchMapping("/users")
-    public ResponseEntity<UserResponseDto.Edit> editUser(@AuthenticationPrincipal CustomUserPrincipal customUserPrincipal, @RequestBody UserRequestDto.Edit requestDto){
+    public ResponseEntity<UserResponseDto.Edit> editUser(@AuthenticationPrincipal CustomUserPrincipal customUserPrincipal, @Valid @RequestBody UserRequestDto.Edit requestDto){
         return ResponseEntity.ok(userService.editUser(requestDto, customUserPrincipal.getUser().getId()));
     }
 
     //사용자 삭제 (본인, 회원 탈퇴)
     @DeleteMapping("/users")
-    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserPrincipal customUserPrincipal, @RequestBody UserRequestDto.Delete requestDto) {
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserPrincipal customUserPrincipal, @Valid @RequestBody UserRequestDto.Delete requestDto) {
         userService.deleteUser(requestDto, customUserPrincipal.getUser().getId());
         return ResponseEntity.noContent().build();
     }
