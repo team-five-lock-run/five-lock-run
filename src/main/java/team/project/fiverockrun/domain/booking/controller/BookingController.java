@@ -2,14 +2,12 @@ package team.project.fiverockrun.domain.booking.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team.project.fiverockrun.domain.auth.security.CustomUserPrincipal;
 import team.project.fiverockrun.domain.booking.dto.request.BookingRequest;
 import team.project.fiverockrun.domain.booking.dto.response.BookingResponse;
-import team.project.fiverockrun.domain.booking.entity.Booking;
 import team.project.fiverockrun.domain.booking.service.BookingService;
 import jakarta.validation.Valid;
 

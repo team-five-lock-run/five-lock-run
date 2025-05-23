@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.project.fiverockrun.domain.user.entity.User;
-import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Getter

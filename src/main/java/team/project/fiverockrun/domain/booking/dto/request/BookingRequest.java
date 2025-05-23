@@ -3,9 +3,7 @@ package team.project.fiverockrun.domain.booking.dto.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import java.time.LocalDateTime;
-import team.project.fiverockrun.domain.user.entity.User;
 
 @Getter
 @AllArgsConstructor

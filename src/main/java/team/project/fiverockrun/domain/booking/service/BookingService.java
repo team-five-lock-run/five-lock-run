@@ -20,8 +20,6 @@ import team.project.fiverockrun.domain.user.entity.User;
 import team.project.fiverockrun.domain.user.repository.UserRepository;
 import team.project.fiverockrun.common.exception.BaseException;
 import team.project.fiverockrun.domain.station.repository.StationRepository;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

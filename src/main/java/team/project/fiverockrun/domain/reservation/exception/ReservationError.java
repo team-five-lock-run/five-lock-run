@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import team.project.fiverockrun.common.exception.ErrorCode;
-import team.project.fiverockrun.domain.booking.excetion.BookingError;
 
 @Getter
 @AllArgsConstructor
