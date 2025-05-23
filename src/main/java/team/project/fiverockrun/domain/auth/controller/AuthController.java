@@ -1,7 +1,9 @@
 package team.project.fiverockrun.domain.auth.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,5 +24,11 @@ public class AuthController {
     @PostMapping("/auth/signin")
     public AuthResponseDto.Signin signin(@Valid @RequestBody AuthRequestDto.Signin signinRequestDto) {
         return authService.signin(signinRequestDto);
+    }
+
+    @PostMapping("/auth/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        authService.logout(request);
+        return ResponseEntity.ok("로그아웃 완료");
     }
 }
