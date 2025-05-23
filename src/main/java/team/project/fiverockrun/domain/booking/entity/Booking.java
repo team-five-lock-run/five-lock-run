@@ -6,6 +6,10 @@ import team.project.fiverockrun.common.entity.Timestamped;
 import team.project.fiverockrun.domain.booking.enums.BookingStatus;
 
 import java.time.LocalDateTime;
+import team.project.fiverockrun.domain.train.entity.Seat;
+import team.project.fiverockrun.domain.train.entity.Train;
+import team.project.fiverockrun.domain.train.entity.TrainCar;
+import team.project.fiverockrun.domain.user.entity.User;
 
 @Entity
 @Getter
@@ -18,11 +22,21 @@ public class Booking extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(nullable = false)
-    private Long seatId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seat_id", nullable = false)
+    private Seat seat;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "train_id", nullable = false)
+    private Train train;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "train_car_id", nullable = false)
+    private TrainCar trainCar;
 
     @Column(nullable = false)
     private LocalDateTime paidAt;
@@ -33,6 +47,18 @@ public class Booking extends Timestamped {
 
     @Column(nullable = false)
     private Integer seatPrice;
+
+    @Column(nullable = false)
+    private LocalDateTime departureTime;
+
+    @Column(nullable = false)
+    private LocalDateTime arrivalTime;
+
+    @Column(nullable = false)
+    private Long departureStationId;
+
+    @Column(nullable = false)
+    private Long arrivalStationId;
 
     public void cancelReservation() {
         this.bookingStatus = BookingStatus.CANCELED;
