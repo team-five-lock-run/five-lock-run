@@ -49,12 +49,15 @@ public class ScheduleService {
         for (int i = 0; i < routes.size(); i++) {
 
             LocalDateTime currentDateTime = baseDateTime.plusHours(i);
+            LocalDateTime arrivalDateTime = currentDateTime.plusMinutes(50);
 
             Schedule schedule = Schedule.builder()
                     .train(train)
                     .station(routes.get(i).getStation())
                     .departureDate(currentDateTime.toLocalDate())
                     .departureTime(currentDateTime.toLocalTime())
+                    .arrivalDate(arrivalDateTime.toLocalDate())
+                    .arrivalTime(arrivalDateTime.toLocalTime())
                     .build();
 
             scheduleRepository.save(schedule);
@@ -70,7 +73,9 @@ public class ScheduleService {
                         schedule.getStation().getId(),
                         schedule.getStation().getName(),
                         schedule.getDepartureDate(),
-                        schedule.getDepartureTime()
+                        schedule.getDepartureTime(),
+                        schedule.getArrivalDate(),
+                        schedule.getArrivalTime()
                 ))
                 .collect(Collectors.toList());
 

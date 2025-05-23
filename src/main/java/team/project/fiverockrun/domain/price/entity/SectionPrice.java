@@ -17,10 +17,10 @@ public class SectionPrice {
     private Long id;
 
     @Column(name = "start_order", nullable = false)
-    private int startOrder;
+    private Long startOrder;
 
     @Column(name = "end_order", nullable = false)
-    private int endOrder;
+    private Long endOrder;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_type", nullable = false)
@@ -33,7 +33,7 @@ public class SectionPrice {
     @JoinColumn(name = "train_id", nullable = false)
     private Train train;
 
-    public SectionPrice(Train train, int startOrder, int endOrder, SeatType seatType, int price) {
+    public SectionPrice(Train train, Long startOrder, Long endOrder, SeatType seatType, int price) {
         this.train = train;
         this.startOrder = startOrder;
         this.endOrder = endOrder;

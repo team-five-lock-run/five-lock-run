@@ -14,6 +14,8 @@ public enum TrainError implements ErrorCode {
     , CANNOT_FIND_TRAIN(HttpStatus.NOT_FOUND ,"TRAIN_ERROR_003","존재하지 않는 기차입니다.")
     , ALREADY_DEACTIVATE_TRAIN(HttpStatus.BAD_REQUEST ,"TRAIN_ERROR_004","이미 비활성화 된 기차입니다.")
     , ALREADY_ACTIVE_TRAIN(HttpStatus.BAD_REQUEST ,"TRAIN_ERROR_005","이미 활성화 된 기차입니다.")
+    , CANNOT_FIND_STATION(HttpStatus.NOT_FOUND ,"TRAIN_ERROR_006","존재하지 않는 역입니다.")
+    , CANNOT_FIND_SCHEDULE(HttpStatus.NOT_FOUND ,"TRAIN_ERROR_007","존재하지 않는 일정입니다.")
     ;
 
 

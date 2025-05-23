@@ -37,7 +37,7 @@ public class SectionPriceService {
      * @return 등록된 가격 정책 정보
      */
     @Transactional
-    public SectionPriceResponse saveSectionPrice(Long trainId, int startOrder, int endOrder, SeatType seatType, int price) {
+    public SectionPriceResponse saveSectionPrice(Long trainId, Long startOrder, Long endOrder, SeatType seatType, int price) {
         Train train = trainRepository.findById(trainId)
                 .orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_TRAIN));
 
@@ -107,7 +107,7 @@ public class SectionPriceService {
      *   }
      * }
      */
-    public SectionPriceResponse getSectionPrices(Long trainId, int startOrder, int endOrder) {
+    public SectionPriceResponse getSectionPrices(Long trainId, Long startOrder, Long endOrder) {
         Map<SeatType, Integer> prices = new HashMap<>();
 
         for (SeatType seatType : SeatType.values()) {
@@ -136,7 +136,7 @@ public class SectionPriceService {
      * @param seatType 좌석 등급 (REGULAR, PREMIUM)
      * @return 해당 구간의 좌석 등급 가격
      */
-    public int getSectionSeatTypePrice(Long trainId, int startOrder, int endOrder, SeatType seatType) {
+    public int getSectionSeatTypePrice(Long trainId, Long startOrder, Long endOrder, SeatType seatType) {
         if (startOrder >= endOrder) {
             throw new BaseException(PriceError.INVALID_SECTION_ORDER);
         }

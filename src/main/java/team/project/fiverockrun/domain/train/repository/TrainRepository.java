@@ -5,6 +5,6 @@ import team.project.fiverockrun.domain.train.entity.Train;
 
 import java.util.Optional;
 
-public interface TrainRepository extends JpaRepository<Train, Long> {
+public interface TrainRepository extends JpaRepository<Train, Long>, TrainRepositoryCustom {
     Optional<Train> findByTrainNumber(Long trainNumber);
 }
