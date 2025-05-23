@@ -171,6 +171,44 @@ public class ReservationService {
     }
 
     /**
+     * 특정 차량의 예약 ID 목록 조회
+     * - 차량 검색 시 사용되며, 특정 열차 차량의 예약된 좌석 ID를 반환합니다.
+     *
+     * @param trainId 기차 ID
+     * @param carId 차량 ID
+     * @return 현재 예약 중인 좌석 ID 목록
+     */
+    public List<Long> getSeatsByTrainCar(Long trainId, Long carId) {
+        String pattern = RESERVATION_PREFIX + trainId + ":" + carId + ":*";
+        List<Long> reservedSeats = new ArrayList<>();
+
+        ScanOptions options = ScanOptions.scanOptions()
+                .match(pattern)
+                .count(50)
+                .build();
+
+        Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(options);
+
+        try {
+            while (cursor.hasNext()) {
+                byte[] key = cursor.next();
+                String keyString = new String(key);
+
+                Object value = redisTemplate.opsForValue().get(keyString);
+
+                if (value instanceof Reservation reservation) {
+                    reservedSeats.add(reservation.getSeatId());
+                }
+
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return reservedSeats;
+    }
+
+    /**
      * 특정 좌석의 예약 단건 조회
      *
      * @param trainId            기차 ID
@@ -297,9 +335,8 @@ public class ReservationService {
                 String keyString = new String(key);
                 Object value = redisTemplate.opsForValue().get(keyString);
 
-                if (value != null) {
+                if (value instanceof Reservation reservation) {
                     log.info("예약 정보 조회 성공: " + keyString);
-                    Reservation reservation = (Reservation) value;
                     ReservationResponse reservationResponse = ReservationResponse.from(keyString, reservation);
                     reservationResponses.add(reservationResponse);
                 } else {
