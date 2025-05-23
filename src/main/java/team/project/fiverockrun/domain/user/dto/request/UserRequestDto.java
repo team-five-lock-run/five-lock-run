@@ -11,7 +11,6 @@
         @Getter
         @RequiredArgsConstructor
         public static class Edit {
-            @NotBlank(message = "이메일은 필수입니다.")
             @Pattern(
                     regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
                     message = "올바른 이메일 형식이 아닙니다."
@@ -21,7 +20,6 @@
             @Pattern(regexp = "^0\\d{1,2}-\\d{3,4}-\\d{4}$", message = "올바른 전화번호 형식이 아닙니다.")
             private final String phoneNumber;
 
-            @NotBlank(message = "사용자 이름은 필수입니다.")
             @Size(max = 8, message = "이름은 최대 8글자까지 가능합니다.")
             private final String name;
 
