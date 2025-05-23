@@ -19,13 +19,13 @@ class ReservationServiceTest {
     @Autowired
     private ReservationService reservationService;
 
-    private static final Long TRAIN_ID = 2L;
-    private static final Long CAR_ID = 2L;
+    private static final Long TRAIN_ID = 3L;
+    private static final Long CAR_ID = 3L;
     private static final Long SEAT_ID = 3L;
-    private static final Long DEPARTURE_STATION_ID = 4L;
+    private static final Long DEPARTURE_STATION_ID = 5L;
     private static final Long ARRIVAL_STATION_ID = 5L;
-    private static final LocalDateTime DEPARTURE_TIME = LocalDateTime.now().plusHours(1);
-    private static final LocalDateTime ARRIVAL_TIME = LocalDateTime.now().plusHours(2);
+    private static final LocalDateTime DEPARTURE_TIME = LocalDateTime.of(2025, 5, 25, 11, 30);
+    private static final LocalDateTime ARRIVAL_TIME = LocalDateTime.of(2025, 5, 25, 12, 30);
     private static final Integer SEAT_PRICE = 34500;
 
     @Test
@@ -48,7 +48,7 @@ class ReservationServiceTest {
                 );
                 reservationService.reserveSeatWithLock(request, (long) i);
 
-                synchronized (successCount) {  // 동기화로 안전하게 업데이트
+                synchronized (successCount) {
                     successCount[0]++;
                 }
             } catch (BaseException e) {
