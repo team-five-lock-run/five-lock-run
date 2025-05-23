@@ -11,7 +11,6 @@ import team.project.fiverockrun.common.config.PasswordEncoder;
 import team.project.fiverockrun.common.exception.BaseException;
 import team.project.fiverockrun.domain.auth.dto.request.AuthRequestDto;
 import team.project.fiverockrun.domain.auth.dto.response.AuthResponseDto;
-import team.project.fiverockrun.domain.auth.exception.AuthError;
 import team.project.fiverockrun.domain.user.entity.User;
 import team.project.fiverockrun.domain.user.enums.UserRole;
 import team.project.fiverockrun.domain.user.repository.UserRepository;
