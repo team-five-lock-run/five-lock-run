@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team.project.fiverockrun.domain.auth.security.CustomUserPrincipal;
+import team.project.fiverockrun.domain.reservation.dto.request.DeleteReservationRequest;
 import team.project.fiverockrun.domain.reservation.dto.request.ReservationRequest;
 import team.project.fiverockrun.domain.reservation.dto.response.ReservationResponse;
 import team.project.fiverockrun.domain.reservation.service.ReservationService;
@@ -63,17 +64,23 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{trainId}/{carId}/{seatId}/{departureStationId}/{arrivalStationId}")
-    ResponseEntity<Void> deleteReservation(@AuthenticationPrincipal CustomUserPrincipal principal,
-                                           @PathVariable Long trainId,
-                                           @PathVariable Long carId,
-                                           @PathVariable Long seatId,
-                                           @PathVariable Long departureStationId,
-                                           @PathVariable Long arrivalStationId,
-                                           @RequestParam LocalDateTime departureTime,
-                                           @RequestParam LocalDateTime arrivalTime) {
+    public ResponseEntity<Void> deleteReservation(@AuthenticationPrincipal CustomUserPrincipal principal,
+                                                  @PathVariable Long trainId,
+                                                  @PathVariable Long carId,
+                                                  @PathVariable Long seatId,
+                                                  @PathVariable Long departureStationId,
+                                                  @PathVariable Long arrivalStationId,
+                                                  @RequestBody DeleteReservationRequest request) {
         Long userId = principal.getUser().getId();
         reservationService.deleteReservation(
-                userId, trainId, carId, seatId, departureStationId, arrivalStationId, departureTime, arrivalTime
+                userId,
+                trainId,
+                carId,
+                seatId,
+                departureStationId,
+                arrivalStationId,
+                request.getDepartureTime(),
+                request.getArrivalTime()
         );
 
         return ResponseEntity.noContent().build();
