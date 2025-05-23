@@ -70,7 +70,7 @@ jobs:
           source: "deploy.tar.gz"
           target: "~/five-lock-run"
 
-      # ec2에서 docker compose 실행
+      # ec2에서 docker compose 실행!
       - name: Run app on EC2 using docker-compose
         uses: appleboy/ssh-action@v0.1.6
         with:

@@ -54,14 +54,14 @@ public class RedisConfig {
             MessageListenerAdapter listenerAdapter
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(listenerAdapter, new PatternTopic("__keyevent@0__:expired"));
+        container.setConnectionFactory(connectionFactory); // Redis 서버와 연결 설정
+        container.addMessageListener(listenerAdapter, new PatternTopic("__keyevent@0__:expired")); // 이벤트 리스너 등록
         return container;
 
     }
 
     @Bean
-    public MessageListenerAdapter listenerAdapter(RedisExpiredEventListener listener) {
-        return new MessageListenerAdapter(listener);
+    public MessageListenerAdapter listenerAdapter(RedisExpiredEventListener listener) { // 커스텀 TTL 만료 감지 처리 클래스
+        return new MessageListenerAdapter(listener); // Spring에서 Redis Pub/Sub 메시지를 받아서 클래스의 onMessage()로 연결해주는 어댑터
     }
 }

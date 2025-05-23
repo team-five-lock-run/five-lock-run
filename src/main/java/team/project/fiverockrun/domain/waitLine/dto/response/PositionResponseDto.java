@@ -5,8 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class WaitLineResponseDto {
-    private final boolean success;
-    private final String message;
-    private final String queueKey;
+public class PositionResponseDto {
+    private final Long postion;
+    private final Long total;
 }

@@ -4,16 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrainSerchRequest {
 
-    private String departureStation;
-    private String arrivalStation;
-    private LocalDateTime departureDateTime;
+    private Long departureStation;
+    private Long arrivalStation;
+    private LocalDate departureDate;
+    private LocalTime departureTime;
     private int passengerCount;
 
 }

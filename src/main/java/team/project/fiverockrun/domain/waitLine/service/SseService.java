@@ -49,7 +49,7 @@ public class SseService {
             try {
                 emitter.send(SseEmitter.event()
                         .name("queue-position")
-                        .data(position));
+                        .data("Now your position : " + position));
             } catch (IOException e) {
                 emitters.remove(userId);
                 emitter.completeWithError(e);
