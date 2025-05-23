@@ -20,9 +20,13 @@ import java.time.temporal.ChronoUnit;
 public class Reservation implements Serializable {
 
     private Long trainId;
+
     private Long carId;
+
     private Long seatId;
+
     private Long departureStationId;
+
     private Long arrivalStationId;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -34,6 +38,7 @@ public class Reservation implements Serializable {
     private LocalDateTime arrivalTime;
 
     private Integer seatPrice;
+
     private Long userId;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
