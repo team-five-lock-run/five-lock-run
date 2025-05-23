@@ -19,7 +19,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @Table(name = "schedule", uniqueConstraints =
-    @UniqueConstraint(columnNames = {"train_id", "station_id", "date", "time"})
+    @UniqueConstraint(columnNames = {"train_id", "station_id", "dep_date", "dep_time"})
 )
 public class Schedule {
     @Id
@@ -34,9 +34,15 @@ public class Schedule {
     @JoinColumn(name = "station_id", nullable = false)
     private Station station;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "dep_date", nullable = false)
     private LocalDate departureDate;
 
-    @Column(name = "time", nullable = false)
+    @Column(name = "dep_time", nullable = false)
     private LocalTime departureTime;
+
+    @Column(name = "arr_date", nullable = false)
+    private LocalDate arrivalDate;
+
+    @Column(name = "arr_time", nullable = false)
+    private LocalTime arrivalTime;
 }
