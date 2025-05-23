@@ -14,8 +14,8 @@ import java.util.Map;
 public class SectionPriceResponse {
 
     private Long trainId;
-    private int startOrder;
-    private int endOrder;
+    private Long startOrder;
+    private Long endOrder;
     private Map<SeatType, Integer> prices;
 
     public static SectionPriceResponse from(SectionPrice sectionPrice) {

@@ -22,16 +22,16 @@ public class TestSectionPriceController {
 
     @GetMapping
     public ResponseEntity<SectionPriceResponse> getSectionPrices(@RequestParam Long trainId,
-                                                                 @RequestParam int startOrder,
-                                                                 @RequestParam int endOrder) {
+                                                                 @RequestParam Long startOrder,
+                                                                 @RequestParam Long endOrder) {
         SectionPriceResponse response = sectionPriceService.getSectionPrices(trainId, startOrder, endOrder);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/seat-type")
     public ResponseEntity<Integer> getSectionSeatTypePrice(@RequestParam Long trainId,
-                                                           @RequestParam int startOrder,
-                                                           @RequestParam int endOrder,
+                                                           @RequestParam Long startOrder,
+                                                           @RequestParam Long endOrder,
                                                            @RequestParam SeatType seatType) {
         int price = sectionPriceService.getSectionSeatTypePrice(trainId, startOrder, endOrder, seatType);
         return ResponseEntity.ok(price);

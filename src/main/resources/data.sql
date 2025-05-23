@@ -1,25 +1,25 @@
 -- 1. USERS (password: Password1@)
-INSERT INTO users (email, name, password, phone_number, user_role, is_deleted)
-VALUES ('user01@test.com', '사용자01', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0001',
-        'USER', false),
-       ('user02@test.com', '사용자02', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0002',
-        'USER', false),
-       ('user03@test.com', '사용자03', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0003',
-        'USER', false),
-       ('user04@test.com', '사용자04', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0004',
-        'USER', false),
-       ('user05@test.com', '사용자05', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0005',
-        'USER', false),
-       ('user06@test.com', '사용자06', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0006',
-        'USER', false),
-       ('user07@test.com', '사용자07', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0007',
-        'USER', false),
-       ('user08@test.com', '사용자08', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0008',
-        'USER', false),
-       ('user09@test.com', '사용자09', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0009',
-        'USER', false),
-       ('user10@test.com', '사용자10', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0010',
-        'USER', false);
+-- INSERT INTO users (email, name, password, phone_number, user_role, is_deleted)
+-- VALUES ('user01@test.com', '사용자01', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0001',
+--         'USER', false),
+--        ('user02@test.com', '사용자02', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0002',
+--         'USER', false),
+--        ('user03@test.com', '사용자03', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0003',
+--         'USER', false),
+--        ('user04@test.com', '사용자04', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0004',
+--         'USER', false),
+--        ('user05@test.com', '사용자05', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0005',
+--         'USER', false),
+--        ('user06@test.com', '사용자06', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0006',
+--         'USER', false),
+--        ('user07@test.com', '사용자07', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0007',
+--         'USER', false),
+--        ('user08@test.com', '사용자08', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0008',
+--         'USER', false),
+--        ('user09@test.com', '사용자09', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0009',
+--         'USER', false),
+--        ('user10@test.com', '사용자10', '$2b$12$EMnSxwgbtdx8LT7lGWihqe6t0u659U1DpklO1n00hQt.h1xvE4Iqa@', '010-0000-0010',
+--         'USER', false);
 
 -- 2. STATIONS
 INSERT INTO station (name, region, is_active)
@@ -108,3 +108,25 @@ VALUES (1, 1, 1, true),
        (2, 1, 2, true),
        (3, 1, 3, true),
        (4, 1, 4, true);
+
+-- 7. SCHEDULE
+INSERT INTO schedule (train_id, station_id, dep_date, dep_time, arr_date, arr_time)
+VALUES
+    (1, 1, '2025-06-01', '08:00:00', '2025-06-01', '08:10:00'),  -- Station 1
+    (1, 2, '2025-06-01', '08:15:00', '2025-06-01', '09:00:00'),  -- Station 2
+    (1, 3, '2025-06-01', '09:05:00', '2025-06-01', '10:30:00');  -- Station 3
+
+-- 8. SECTION_PRICE
+INSERT INTO section_price (train_id, start_order, end_order, seat_type, price)
+VALUES
+    (1, 1, 2, 'REGULAR', 20000),
+    (1, 1, 2, 'PREMIUM', 30000),
+    (1, 2, 3, 'REGULAR', 25000),
+    (1, 2, 3, 'PREMIUM', 35000),
+    (1, 3, 4, 'REGULAR', 30000),
+    (1, 3, 4, 'PREMIUM', 40000),
+    (1, 1, 3, 'REGULAR', 45000),
+    (1, 1, 3, 'PREMIUM', 55000),
+    (1, 1, 4, 'REGULAR', 60000),
+    (1, 1, 4, 'PREMIUM', 70000);
+    

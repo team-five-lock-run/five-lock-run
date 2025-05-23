@@ -20,11 +20,11 @@ public interface SectionPriceRepository extends JpaRepository<SectionPrice, Long
             """)
     List<SectionPrice> findSectionPrices(
             @Param("trainId") Long trainId,
-            @Param("startOrder") int StartOrder,
-            @Param("endOrder") int endOrder,
+            @Param("startOrder") Long StartOrder,
+            @Param("endOrder") Long endOrder,
             @Param("seatType") SeatType seatType
     );
 
     boolean existsByTrain_IdAndStartOrderAndEndOrderAndSeatType(
-            Long trainId, int startOrder, int endOrder, SeatType seatType);
+            Long trainId, Long startOrder, Long endOrder, SeatType seatType);
 }

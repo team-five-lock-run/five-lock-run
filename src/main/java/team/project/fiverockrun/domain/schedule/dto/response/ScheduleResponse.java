@@ -15,8 +15,10 @@ public class ScheduleResponse {
     private String stationName;      // 현재 정차역 이름
     private LocalDate departureDate; // 출발 날짜
     private LocalTime departureTime; // 출발 시각
+    private LocalDate arrivalDate; // 도착 날짜
+    private LocalTime arrivalTime; // 도착 시각
 
-    public ScheduleResponse(Long scheduleId, Long trainId, String trainName, Long stationId, String stationName, LocalDate departureDate, LocalTime departureTime) {
+    public ScheduleResponse(Long scheduleId, Long trainId, String trainName, Long stationId, String stationName, LocalDate departureDate, LocalTime departureTime, LocalDate arrivalDate, LocalTime arrivalTime) {
         this.scheduleId = scheduleId;
         this.trainId = trainId;
         this.trainName = trainName;
@@ -24,5 +26,7 @@ public class ScheduleResponse {
         this.stationName = stationName;
         this.departureDate = departureDate;
         this.departureTime = departureTime;
+        this.arrivalDate = arrivalDate;
+        this.arrivalTime = arrivalTime;
     }
 }
