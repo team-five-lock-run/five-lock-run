@@ -1,13 +1,22 @@
 package team.project.fiverockrun.domain.train.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.project.fiverockrun.common.exception.BaseException;
+import team.project.fiverockrun.domain.price.dto.response.SectionPriceResponse;
+import team.project.fiverockrun.domain.price.service.SectionPriceService;
+import team.project.fiverockrun.domain.route.repository.RouteRepository;
+import team.project.fiverockrun.domain.schedule.entity.Schedule;
+import team.project.fiverockrun.domain.schedule.repository.ScheduleRepository;
+import team.project.fiverockrun.domain.station.entity.Station;
+import team.project.fiverockrun.domain.station.repository.StationRepository;
 import team.project.fiverockrun.domain.train.dto.request.TrainRequest;
+import team.project.fiverockrun.domain.train.dto.request.TrainSerchRequest;
 import team.project.fiverockrun.domain.train.dto.request.UpdateTrainRequest;
+import team.project.fiverockrun.domain.train.dto.response.TrainCarResponse;
 import team.project.fiverockrun.domain.train.dto.response.TrainReponse;
+import team.project.fiverockrun.domain.train.dto.response.TrainSerchResponse;
 import team.project.fiverockrun.domain.train.dto.response.UpdateTrainResponse;
 import team.project.fiverockrun.domain.train.entity.Seat;
 import team.project.fiverockrun.domain.train.entity.Train;
@@ -18,6 +27,7 @@ import team.project.fiverockrun.domain.train.repository.SeatRepository;
 import team.project.fiverockrun.domain.train.repository.TrainCarRepository;
 import team.project.fiverockrun.domain.train.repository.TrainRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +38,10 @@ public class TrainService {
     private final TrainRepository trainRepository;
     private final TrainCarRepository trainCarRepository;
     private final SeatRepository seatRepository;
+    private final SectionPriceService sectionPriceService;
+    private final RouteRepository routeRepository;
+    private final StationRepository stationRepository;
+    private final ScheduleRepository scheduleRepository;
 
     // 열차, 차량, 좌석 생성
     @Transactional
@@ -154,5 +168,124 @@ public class TrainService {
                 request.getPremiumCarCount()
         );
     }
+
+    // 열차 검색 후 결과 값 반환 (페이징X)
+    public List<TrainSerchResponse> serchTrains(TrainSerchRequest request) {
+
+        List<TrainSerchResponse> trainList = trainRepository.searchTrain(request);
+
+        for (TrainSerchResponse train : trainList) {
+            Long startOrder = getOrderByStation(train.getTrainId(), train.getDepartureStation());
+            Long endOrder = getOrderByStation(train.getTrainId(), train.getArrivalStation());
+
+            SectionPriceResponse priceResponse = sectionPriceService.getSectionPrices(train.getTrainId(), startOrder, endOrder);
+
+            train.setPrices(priceResponse.getPrices());
+        }
+
+        return trainList;
+    }
+
+
+    private Long getOrderByStation(Long trainId, Long stationId) {
+        return routeRepository.findByTrain_IdAndStation_Id(trainId, stationId)
+                .orElseThrow(() -> new RuntimeException("해당 열차, 역 정차 정보 없음"))
+                .getOrder();
+    }
+
+    public List<TrainCarResponse> searchTrainPremiumCars(
+            Long trainId,
+            Long departureStationId,
+            Long arrivalStationId,
+            LocalDate departureDate,
+            int passengerCount
+    ) {
+        List<TrainCar> premiumCars = trainCarRepository.findByTrainIdAndSeatType(trainId, SeatType.PREMIUM);
+
+        List<TrainCarResponse> result = new ArrayList<>();
+
+        Station departureStation = stationRepository.findById(departureStationId)
+                .orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_STATION));
+        Station arrivalStation = stationRepository.findById(arrivalStationId)
+                .orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_STATION));
+
+        for (TrainCar car : premiumCars) {
+            Schedule departureSchedule = scheduleRepository.findByTrainAndStationAndDepartureDate(
+                    car.getTrain(), departureStation, departureDate
+            ).orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_SCHEDULE));
+
+            Schedule arrivalSchedule = scheduleRepository.findByTrainAndStationAndDepartureDate(
+                    car.getTrain(), arrivalStation, departureDate
+            ).orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_SCHEDULE));
+
+            List<String> availableSeats = seatRepository.findAvailableSeats(
+                    car.getId(), departureStationId, arrivalStationId, departureDate
+            );
+
+            if (availableSeats.size() >= passengerCount) {
+                result.add(new TrainCarResponse(
+                        departureStationId,
+                        arrivalStationId,
+                        departureDate,
+                        departureSchedule.getDepartureTime(),
+                        arrivalSchedule.getArrivalDate().atTime(arrivalSchedule.getArrivalTime()),
+                        passengerCount,
+                        car.getSeatType(),
+                        car.getTrain().getTrainNumber(),
+                        car.getCarNumber(),
+                        availableSeats
+                ));
+            }
+        }
+        return result;
+    }
+
+    public List<TrainCarResponse> searchTrainRegularCars(
+            Long trainId,
+            Long departureStationId,
+            Long arrivalStationId,
+            LocalDate departureDate,
+            int passengerCount
+    ) {
+        List<TrainCar> regularCars = trainCarRepository.findByTrainIdAndSeatType(trainId, SeatType.REGULAR);
+
+        List<TrainCarResponse> result = new ArrayList<>();
+
+        Station departureStation = stationRepository.findById(departureStationId)
+                .orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_STATION));
+        Station arrivalStation = stationRepository.findById(arrivalStationId)
+                .orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_STATION));
+
+        for (TrainCar car : regularCars) {
+            Schedule departureSchedule = scheduleRepository.findByTrainAndStationAndDepartureDate(
+                    car.getTrain(), departureStation, departureDate
+            ).orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_SCHEDULE));
+
+            Schedule arrivalSchedule = scheduleRepository.findByTrainAndStationAndDepartureDate(
+                    car.getTrain(), arrivalStation, departureDate
+            ).orElseThrow(() -> new BaseException(TrainError.CANNOT_FIND_SCHEDULE));
+
+            List<String> availableSeats = seatRepository.findAvailableSeats(
+                    car.getId(), departureStationId, arrivalStationId, departureDate
+            );
+
+            if (availableSeats.size() >= passengerCount) {
+                result.add(new TrainCarResponse(
+                        departureStationId,
+                        arrivalStationId,
+                        departureDate,
+                        departureSchedule.getDepartureTime(),
+                        arrivalSchedule.getArrivalDate().atTime(arrivalSchedule.getArrivalTime()),
+                        passengerCount,
+                        car.getSeatType(),
+                        car.getTrain().getTrainNumber(),
+                        car.getCarNumber(),
+                        availableSeats
+                ));
+            }
+        }
+        return result;
+    }
+
 
 }
