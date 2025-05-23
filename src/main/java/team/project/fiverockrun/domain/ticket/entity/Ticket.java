@@ -1,15 +1,19 @@
 package team.project.fiverockrun.domain.ticket.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.project.fiverockrun.domain.user.entity.User;
-
+import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "ticket")
 public class Ticket {
 
@@ -43,6 +47,9 @@ public class Ticket {
 
     @Column(nullable = false)
     private Integer price; // 결제 금액
+
+    @Column(name = "ticket_name")
+    private String ticketName;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

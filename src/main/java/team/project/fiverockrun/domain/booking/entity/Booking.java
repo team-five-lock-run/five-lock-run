@@ -48,6 +48,18 @@ public class Booking extends Timestamped {
     @Column(nullable = false)
     private Integer seatPrice;
 
+    @Column(nullable = false)
+    private LocalDateTime departureTime;
+
+    @Column(nullable = false)
+    private LocalDateTime arrivalTime;
+
+    @Column(nullable = false)
+    private Long departureStationId;
+
+    @Column(nullable = false)
+    private Long arrivalStationId;
+
     public void cancelReservation() {
         this.bookingStatus = BookingStatus.CANCELED;
     }
