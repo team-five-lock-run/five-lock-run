@@ -36,13 +36,13 @@ public class ReservationService {
     private static final String LOCK_SEAT_PREFIX = "lock:seat:";
 
     /**
-     * 좌석 단위로 Redisson 분산 락을 획득한 뒤,
-     * 중복 예약 여부를 확인하고 예약 정보를 Redis 에 저장
+     * 좌석에 대한 분산 락을 적용하여 예약 처리
+     * 중복 예약이 발생하지 않도록 Redis 에 예약 정보 저장
      *
      * @param request 예약 요청 정보
-     * @param userId 로그인한 사용자 ID
-     * @throws BaseException 예약 중 락 획득 실패, 중복 예약, 인터럽트 발생
+     * @param userId  로그인한 사용자 ID
      * @return 저장된 예약 정보
+     * @throws BaseException 예약 중 락 획득 실패, 중복 예약, 인터럽트 발생 시
      */
     public ReservationResponse reserveSeatWithLock(ReservationRequest request, Long userId) {
         // 좌석 단위로 분산 락 적용
@@ -82,13 +82,13 @@ public class ReservationService {
                         request.getArrivalTime()
                 );
 
-                // 이미 예약된 좌석이면 중복 예약 예외 처리
+                // 중복 예약 체크
                 if (redisTemplate.hasKey(reservationKey)) {
                     log.error("중복 예약 시도: " + userId);
                     throw new BaseException(ReservationError.ALREADY_RESERVED);
                 }
 
-                // 예약 객체 생성 후 Redis 저장
+                // 예약 객체 생성 및 저장
                 Reservation reservation = Reservation.of(request, userId);
                 saveReservation(reservation);
 
@@ -108,7 +108,7 @@ public class ReservationService {
     }
 
     /**
-     * 예약 정보를 좌석 기준 키와 사용자 기준 키로 Redis에 저장
+     * 예약 정보를 Redis 에 저장
      *
      * @param reservation 저장할 예약 객체
      */
@@ -147,7 +147,7 @@ public class ReservationService {
     }
 
     /**
-     * 사용자의 모든 예약 목록 조회
+     * 특정 사용자의 예약 목록 조회
      *
      * @param userId 로그인한 사용자 ID
      * @return 사용자의 예약 목록
@@ -158,12 +158,12 @@ public class ReservationService {
     }
 
     /**
-     * 특정 좌석에 예약된 모든 구간 정보 조회
+     * 특정 좌석의 예약 목록 조회
      *
      * @param trainId 기차 ID
-     * @param carId 차량 ID
-     * @param seatId 좌석 ID
-     * @return 해당 좌석의 예약 목록
+     * @param carId   차량 ID
+     * @param seatId  좌석 ID
+     * @return 좌석의 예약 목록
      */
     public List<ReservationResponse> getReservationsBySeat(Long trainId, Long carId, Long seatId) {
         String pattern = RESERVATION_PREFIX + trainId + ":" + carId + ":" + seatId + ":*";
@@ -171,14 +171,53 @@ public class ReservationService {
     }
 
     /**
-     * 예약 정보 단건 조회
-     * - 예약이 존재하지 않을 경우 예외 발생
+     * 특정 차량의 예약 ID 목록 조회
+     * - 차량 검색 시 사용되며, 특정 열차 차량의 예약된 좌석 ID를 반환합니다.
      *
      * @param trainId 기차 ID
      * @param carId 차량 ID
-     * @param seatId 좌석 ID
+     * @return 현재 예약 중인 좌석 ID 목록
+     */
+    public List<Long> getSeatsByTrainCar(Long trainId, Long carId) {
+        String pattern = RESERVATION_PREFIX + trainId + ":" + carId + ":*";
+        List<Long> reservedSeats = new ArrayList<>();
+
+        ScanOptions options = ScanOptions.scanOptions()
+                .match(pattern)
+                .count(50)
+                .build();
+
+        Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(options);
+
+        try {
+            while (cursor.hasNext()) {
+                byte[] key = cursor.next();
+                String keyString = new String(key);
+
+                Object value = redisTemplate.opsForValue().get(keyString);
+
+                if (value instanceof Reservation reservation) {
+                    reservedSeats.add(reservation.getSeatId());
+                }
+
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return reservedSeats;
+    }
+
+    /**
+     * 특정 좌석의 예약 단건 조회
+     *
+     * @param trainId            기차 ID
+     * @param carId              차량 ID
+     * @param seatId             좌석 ID
      * @param departureStationId 출발역 ID
-     * @param arrivalStationId 도착역 ID
+     * @param arrivalStationId   도착역 ID
+     * @param departureTime      출발 일시
+     * @param arrivalTime        도착 일시
      * @return 해당 좌석의 예약 정보
      */
     public ReservationResponse getReservation(
@@ -208,19 +247,20 @@ public class ReservationService {
         }
 
         Reservation reservation = (Reservation) result;
-
         return ReservationResponse.from(key, reservation);
     }
 
     /**
      * 예약 정보 삭제
      *
-     * @param userId 사용자 ID
-     * @param trainId 기차 ID
-     * @param carId 차량 ID
-     * @param seatId 좌석 ID
+     * @param userId             사용자 ID
+     * @param trainId            기차 ID
+     * @param carId              차량 ID
+     * @param seatId             좌석 ID
      * @param departureStationId 출발역 ID
-     * @param arrivalStationId 도착역 ID
+     * @param arrivalStationId   도착역 ID
+     * @param departureTime      출발 일시
+     * @param arrivalTime        도착 일시
      */
     public void deleteReservation(
             Long userId,
@@ -259,13 +299,25 @@ public class ReservationService {
         redisTemplate.delete(userKey);
     }
 
-    // 공통 키 생성 메서드
+    /**
+     * Redis 키 생성
+     *
+     * @param prefix 키의 접두사 (예약, 사용자, 락)
+     * @param params 키를 구성하는 매개변수
+     * @return 생성된 Redis 키
+     */
     private String generateKey(String prefix, Object... params) {
         return prefix + String.join(":", Arrays.stream(params)
                 .map(Objects::toString)
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * 패턴 기반 예약 목록 조회
+     *
+     * @param pattern 조회할 키의 패턴
+     * @return 조회된 예약 정보 목록
+     */
     private List<ReservationResponse> getReservations(String pattern) {
         List<ReservationResponse> reservationResponses = new ArrayList<>();
 
@@ -281,13 +333,10 @@ public class ReservationService {
             while (cursor.hasNext()) {
                 byte[] key = cursor.next();
                 String keyString = new String(key);
-                log.info("찾은 키: " + keyString);
-
                 Object value = redisTemplate.opsForValue().get(keyString);
 
-                if (value != null) {
+                if (value instanceof Reservation reservation) {
                     log.info("예약 정보 조회 성공: " + keyString);
-                    Reservation reservation = (Reservation) value;
                     ReservationResponse reservationResponse = ReservationResponse.from(keyString, reservation);
                     reservationResponses.add(reservationResponse);
                 } else {
@@ -300,5 +349,4 @@ public class ReservationService {
 
         return reservationResponses;
     }
-
 }

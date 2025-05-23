@@ -23,7 +23,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> reserveSeat(@RequestBody @Valid ReservationRequest request,
-                                                   @AuthenticationPrincipal CustomUserPrincipal principal) {
+                                                           @AuthenticationPrincipal CustomUserPrincipal principal) {
 
         Long userId = principal.getUser().getId();
         ReservationResponse response = reservationService.reserveSeatWithLock(request, userId);
@@ -49,12 +49,12 @@ public class ReservationController {
 
     @GetMapping("/details/{trainId}/{carId}/{seatId}/{departureStationId}/{arrivalStationId}")
     public ResponseEntity<ReservationResponse> getReservation(@PathVariable Long trainId,
-                                                      @PathVariable Long carId,
-                                                      @PathVariable Long seatId,
-                                                      @PathVariable Long departureStationId,
-                                                      @PathVariable Long arrivalStationId,
-                                                      @RequestParam LocalDateTime departureTime,
-                                                      @RequestParam LocalDateTime arrivalTime) {
+                                                              @PathVariable Long carId,
+                                                              @PathVariable Long seatId,
+                                                              @PathVariable Long departureStationId,
+                                                              @PathVariable Long arrivalStationId,
+                                                              @RequestParam LocalDateTime departureTime,
+                                                              @RequestParam LocalDateTime arrivalTime) {
         ReservationResponse response = reservationService.getReservation(
                 trainId, carId, seatId, departureStationId, arrivalStationId, departureTime, arrivalTime
         );
