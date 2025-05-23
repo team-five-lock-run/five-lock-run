@@ -1,11 +1,11 @@
 name: CI/CD Deploy to EC2
 
-# 트리거 조건 : dev브랜치에 pushe될 때 자동 실행
+# 트리거 조건 : dev브랜치에 push 될 때 자동 실행
 on:
   workflow_dispatch:
   push:
     branches:
-      - dev
+      - haeun/feat
 
 jobs:
   deploy:
