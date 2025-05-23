@@ -11,6 +11,7 @@ import team.project.fiverockrun.common.config.PasswordEncoder;
 import team.project.fiverockrun.common.exception.BaseException;
 import team.project.fiverockrun.domain.auth.dto.request.AuthRequestDto;
 import team.project.fiverockrun.domain.auth.dto.response.AuthResponseDto;
+import team.project.fiverockrun.domain.auth.exception.AuthError;
 import team.project.fiverockrun.domain.user.entity.User;
 import team.project.fiverockrun.domain.user.enums.UserRole;
 import team.project.fiverockrun.domain.user.repository.UserRepository;
@@ -76,13 +77,16 @@ public class AuthService {
 
     public void logout(HttpServletRequest request) {
         String token = resolveToken(request);
-        if (token == null) return;
+        if (token == null) {
+            throw new BaseException(INVALID_TOKEN);
+        }
 
         Claims claims = jwtUtil.validateToken(token);
-        if (claims == null) return;
+        if (claims == null) {
+            throw new BaseException(INVALID_TOKEN);
+        }
 
         long expiration = jwtUtil.getRemainingTime(token);
-
         redisTemplate.opsForValue().set("blacklist:" + token, "logout", expiration, TimeUnit.MILLISECONDS);
     }
 

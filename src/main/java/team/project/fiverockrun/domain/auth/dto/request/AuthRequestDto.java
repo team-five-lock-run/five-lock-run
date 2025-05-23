@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import team.project.fiverockrun.domain.user.enums.UserRole;
 
 @Getter
 @RequiredArgsConstructor
