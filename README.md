@@ -18,7 +18,6 @@
 * QueryDSL 5.0.0 (Jakarta)
 * JWT (Json Web Token) 기반 인증
 * BCrypt 비밀번호 암호화
-* Gradle (Groovy DSL)
 * Lombok
 * Docker
 * GitHub Actions (CI/CD)
@@ -50,14 +49,14 @@
 * 순번 실시간 조회, 수동 이탈, 예약 완료 시 자동 이탈 처리
 * 예매 진입 흐름 제어를 통한 서버 안정성 확보
 
-### 예약 - 결제 대기 [@withong](https://github.com/withong)
+### 예약 (결제 대기) [@withong](https://github.com/withong)
 
 * Redis에 좌석 예약 정보 저장
 * Redisson 분산 락 적용을 통한 동시성 제어
 * 사용자 예약 목록 조회, 좌석별 예약 정보 조회, 단건 조회 및 취소
 * SCAN 명령어 기반 예약 목록 조회 최적화
 
-### 예매 - 결제 완료 [@gonaeun](https://github.com/gonaeun)
+### 예매 (결제 완료) [@gonaeun](https://github.com/gonaeun)
 
 * 예매 정보 저장, 취소 및 티켓 발급
 * 사용자 예매 목록 조회 및 단건 조회
