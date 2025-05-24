@@ -19,7 +19,7 @@ class ReservationServiceTest {
     @Autowired
     private ReservationService reservationService;
 
-    private static final Long TRAIN_ID = 3L;
+    private static final Long TRAIN_ID = 1L;
     private static final Long CAR_ID = 3L;
     private static final Long SEAT_ID = 3L;
     private static final Long DEPARTURE_STATION_ID = 5L;
@@ -61,5 +61,8 @@ class ReservationServiceTest {
         // 예약 성공 횟수 1명, 실패 횟수 999명 확인
         assertEquals(1, successCount[0]);
         assertEquals(999, failedCount[0]);
+
+        System.out.println("ReservationServiceTest 예약 성공: " + successCount[0]);
+        System.out.println("ReservationServiceTest 예약 실패: " + failedCount[0]);
     }
 }
