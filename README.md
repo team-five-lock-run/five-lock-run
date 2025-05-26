@@ -1,24 +1,30 @@
 # 🚂 오락실행
 
-이 프로젝트는 실시간 기차 예매 서비스를 제공하는 백엔드 서버입니다.  
-사용자는 기차, 날짜, 시간, 좌석을 선택해 예약할 수 있으며, 결제 후 예매 내역과 티켓을 조회할 수 있습니다.  
-다수의 사용자가 동시에 접근하는 상황을 고려해 요청 순서를 제어하는 대기열 시스템을 도입하였고,  
-Redisson 기반의 분산 락을 통해 하나의 좌석에는 단 한 명만 예약할 수 있도록 동시성 문제를 제어하였습니다.
-또한 CI/CD 파이프라인을 활용하여 배포 자동화 서비스를 구현하였습니다.
+Spring Boot 기반 **실시간 기차 예매 서비스**를 제공하는 백엔드 서버입니다.
+
+<br>
+
+## 🪜 프로젝트 개요
+- 기간 : 2025.05.16 ~ 2025.05.23
+- 인원 : 5인 개발 (팀 프로젝트)
+- 목표
+  - 사용자는 기차, 날짜, 시간, 좌석을 선택해 실시간 예매할 수 있으며, 예매 후 예매 내역과 티켓을 조회할 수 있습니다.
+  - 다수의 사용자 접속 환경을 고려하여 요청 순서를 제어하는 **대기열 시스템**을 도입했습니다.
+  - **Redisson 분산 락 기반 동시성 제어**를 통해 하나의 좌석에는 단 한 명만 예매할 수 있도록 구현했습니다.
+  - CI/CD 파이프라인을 구축하여 EC2 환경에서 **자동 배포**가 가능하도록 설정했습니다.
 
 <br>
 
 ## 🛠 기술 스택
 
-* Java 17
-* Spring Boot 3.4.5
-* Spring Data JPA, Validation, Security
-* QueryDSL 5.0.0 (Jakarta)
-* JWT 기반 인증, BCrypt 비밀번호 암호화
-* MySQL, Redis (Spring Data Redis, Redisson)
-* Lombok
-* JUnit 5, Spring Boot Test, Spring Security Test
-* AWS EC2(Linux Instance), Docker, GitHub Actions (CI/CD)
+- Backend : Java 17, Spring Boot 3.4.5, Spring Security, JWT
+- Database : MySQL, Redis (Spring Data Redis, Redisson)
+- ORM : Spring Data JPA, Hibernate, QueryDSL 5.0.0 (Jakarta)
+- Authentication & Security : JWT 기반 인증, Bcrypt 비밀번호 암호화
+- Test : JUnit5, Spring Boot Test, Spring Security Test
+- DevOps : AWS EC2 (Linux), Docker, GitHub Actions (CI/CD)
+- API TEST : Postman
+- 기타 : Lombok, Validation
 
 <br>
 
